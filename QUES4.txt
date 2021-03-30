@@ -1,0 +1,61 @@
+Question 4: Consider the following schema:
+
+Sailors (sid, sname, rating, age) =>
+
+create table sailors (
+    sid int primary key,
+    sname char(20),
+    rating int,
+    age int);
+
+Boats (bid, bname, color) =>
+
+create table boats (
+    bid int primary key,
+    bname char(20),
+    color char(20));
+
+Reserves (sid, bid, day(date)) =>
+
+create table reserves (
+    sid int,
+    bid int,
+    day date,
+    foreign key (sid) references sailors (sid),
+    foreign key (bid) references boats (bid));
+
+INSERTING VALUES IN SAILORS =>
+INSERT INTO sailors VALUES ( 22, 'Dustin', 7, 45 );
+INSERT INTO sailors VALUES ( 29, 'Brutos', 1, 33 );
+INSERT INTO sailors VALUES ( 31, 'Lubber', 8, 55 );
+INSERT INTO sailors VALUES ( 32, 'Andy', 8, 25 );
+INSERT INTO sailors VALUES ( 58, 'Rusty', 10, 35 );
+
+INSERTING VALUES IN BOATS =>
+INSERT INTO boats VALUES (101, 'Interlake', 'blue');
+INSERT INTO boats VALUES (102, 'Interlake', 'red');
+INSERT INTO boats VALUES (103, 'Clipper', 'green');
+INSERT INTO boats VALUES (104, 'Marine', 'red');
+
+INSERTING VALUES IN RESERVES =>
+INSERT INTO reserves VALUES ( 22, 101, '1998-10-10');
+INSERT INTO reserves VALUES ( 22, 102, '1998-10-10');
+INSERT INTO reserves VALUES ( 31, 102, '1998-11-10');
+INSERT INTO reserves VALUES ( 31, 103, '1998-11-6');
+INSERT INTO reserves VALUES ( 29, 104, '1998-10-7');
+=====================================================
+
+1. Find the names of sailors who have reserved a red boat, and list in the order of age.
+=> select sname, age from sailors, reserves, boats
+where sailors.sid=reserves.sid and reserves.bid=boats.bid and boats.color="red" ORDER by age;
+
+2. Find the ids and names of sailors who have reserved two different boats on the same day.
+
+3. Find the name and the age of the youngest sailor.
+=> select sname, min(age) from sailors;
+
+4. Find the average age of sailors for each rating level.
+=> select rating,avg(age) from sailors group by rating;
+
+5. Find the average age of sailors for each rating level that has at least two sailors.
+=> select rating,avg(age) from sailors group by rating having count(*)>=2;
