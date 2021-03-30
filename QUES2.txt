@@ -1,0 +1,139 @@
+Question 2: Consider the schema for Movie Database:
+
+ACTOR(Act_id, Act_Name, Act_Gender)
+DIRECTOR(Dir_id, Dir_Name, Dir_Phone)
+MOVIES(Mov_id, Mov_Title, Mov_Year, Mov_Lang, Dir_id)
+MOVIE_CAST(Act_id, Mov_id, Role)
+RATING(Mov_id, Rev_Stars)
+
+Write SQL queries:
+1. List the titles of all movies directed by ‘Hitchcock’.
+2. Find the movie names where one or more actors acted in two or more movies.
+3. List all actors who acted in a movie before 2000 and also in a movie after 2015 (use JOIN
+operation).
+4. Find the title of movies and number of stars for each movie that has at least one rating and
+find the highest number of stars that movie received. Sort the result by movie title.
+5. Update rating of all movies directed by ‘Steven Spielberg’ to 5.
+=================================================================
+
+
+
+ACTOR(Act_id, Act_Name, Act_Gender) =>
+
+create table actor(
+act_id char(4) not null PRIMARY KEY,
+act_name char(20),
+act_gender char(1));
+
+DIRECTOR(Dir_id, Dir_Name, Dir_Phone) =>
+
+create table director(
+dir_id char(4) not null PRIMARY KEY,
+dir_name char(20),
+dir_phone char(10));
+
+MOVIES(Mov_id, Mov_Title, Mov_Year, Mov_Lang, Dir_id) =>
+
+create table movies(
+mov_id integer not null primary key AUTOINCREMENT,
+mov_title char(30),
+mov_year char(4),
+mov_lang char(3),
+dir_id char(4),
+FOREIGN KEY(dir_id) REFERENCES director(dir_id));
+
+MOVIE_CAST(Act_id, Mov_id, Role) =>
+
+create table movie_cast(
+act_id char(4),
+mov_id integer,
+role char(30),
+FOREIGN KEY(act_id) REFERENCES actor(act_id),
+FOREIGN KEY(mov_id) REFERENCES movies(mov_id));
+
+RATING(Mov_id, Rev_Stars) =>
+
+create table rating(
+mov_id INTEGER,
+rev_stars INTEGER,
+FOREIGN KEY (mov_id) REFERENCES movies(mov_id));
+
+INSERTING VALUES IN ACTOR =>
+insert into actor values('A-01','James','M');
+insert into actor values('B-01','Peter','M');
+insert into actor values('A-02','Deborah','F');
+insert into actor values('C-01','Robert','M');
+insert into actor values('B-02','Nicole','F');
+insert into actor values('A-05','Stephen','M');
+
+INSERTING VALUES IN DIRECTOR =>
+insert into director values('M-01','Dodo','M');
+insert into director values('T-01','George','M');
+insert into director values('M-02','Victoria','F');
+insert into director values('O-01','Lewis','M');
+insert into director values('T-02','Ken','F');
+insert into director values('M-05','Ben','M');
+insert into director values('M-03','Hitchcock','M');
+insert into director values('M-04','Steven Spielberg','M');
+
+INSERTING VALUES IN MOVIES =>
+INSERT INTO movies (mov_id,  mov_title, mov_year, mov_lang, dir_id) values(
+1,'The Lost World', 1997,'Eng','M-01');
+INSERT INTO movies (mov_id,  mov_title, mov_year, mov_lang, dir_id) values(
+2, 'Pirates of the Caribbean',2003,'Eng','M-03');
+INSERT INTO movies (mov_id,  mov_title, mov_year, mov_lang, dir_id) values(
+3,'Harry Potter and Goblet of Fire',2005,'Eng','M-04');
+INSERT INTO movies (mov_id,  mov_title, mov_year, mov_lang, dir_id) values(
+4,'The Hobbit: An Unexpected Journey',2012,'Fre','M-03');
+INSERT INTO movies (mov_id,  mov_title, mov_year, mov_lang, dir_id) values(
+5,'The Lord of the Rings',1999,'Ger','M-04');
+INSERT INTO movies (mov_id,  mov_title, mov_year, mov_lang, dir_id) values(
+6,'The Return of the King',2016,'Por','M-04');
+
+INSERTING VALUES IN MOVIE_CAST =>
+insert into movie_cast values(
+'A-05',1,'Alice');
+insert into movie_cast values(
+'A-05',6,'Michael');
+insert into movie_cast values(
+'B-02',4,'Andy');
+insert into movie_cast values(
+'B-02',5,'Rose');
+insert into movie_cast values(
+'C-01',2,'Harry');
+insert into movie_cast values(
+'A-02',3,'Marry');
+
+INSERTING VALUES IN RATING =>
+insert into rating values(1,3);
+insert into rating values(2,4);
+insert into rating values(3,5);
+insert into rating values(4,1);
+insert into rating values(5,2);
+insert into rating values(6,5);
+
+1. List the titles of all movies directed by ‘Hitchcock’.
+=> select mov_title from movies, director where movies.dir_id=director.dir_id and dir_name='Hitchcock';
+
+2. Find the movie names where one or more actors acted in two or more movies.
+=> select mov_title from movies, movie_cast
+where movies.mov_id=movie_cast.mov_id
+and movie_cast.act_id in (select act_id from movie_cast group by act_id having count(*)>=2);
+
+3. List all actors who acted in a movie before 2000 and also in a movie after 2015 (use JOIN operation).
+=> select act_name from actor 
+join movie_cast on actor.act_id=movie_cast.act_id 
+join movies on movie_cast.mov_id=movies.mov_id
+where mov_year not between 2000 and 2015;
+
+4. Find the title of movies and number of stars for each movie that has at least one rating and find the highest number of stars that movie received. Sort the result by movie title.
+=> select mov_title, rev_stars from movies,rating 
+where movies.mov_id=rating.mov_id and rev_stars>=1 order by rev_stars desc, mov_title asc
+OR
+select mov_title, max(rev_stars) from movies join rating using (mov_id) group by mov_title having max(rev_stars)>=1 order by mov_title
+
+
+5. Update rating of all movies directed by ‘Steven Spielberg’ to 5.
+=> update rating set rev_stars=5 where mov_id in(
+select mov_id from movies, director 
+where movies.dir_id=director.dir_id and dir_name="Steven Spielberg")
