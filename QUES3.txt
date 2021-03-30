@@ -1,0 +1,27 @@
+Question 3: Create the following tables.
+
+employee (emp_no,emp_name,DOB, address, doj, mobile_no, dept_no, salary).
+department (dept_no, dept_name, location).
+
+Write SQL queries:
+
+1. Display the empno, name, and salaries for employees whose average salary is higher than the average salary of the organization .
+=> select EMPNO, EMP_NAME, SALARY from employee where SALARY>(select avg(salary) from employee)
+
+2. Display the details of employees whose salary is equal to the minimum salary of organisation.
+=> select * from employee where SALARY=(select min(salary) from employee)
+
+3. Display all the employees whose designation is same as that of ‘Arun’
+=> select EMP_NAME from employee where EMP_NAME="Arun"
+
+4. Display the empno and name of employees who earn more than any Employee in dept 1.
+=> select EMPNO, EMP_NAME, DEPT_NO from employee where SALARY>(select salary from employee where DEPT_NO=1)
+
+5. Display the empno,name , departments that the departments are same in both the emp and dept .
+=> select EMPNO, EMP_NAME, DEPT_NAME from employee, department where employee.DEPT_NO = department.DEPT_NO
+
+6. Display the employee details by implementing left inner join.
+=> select * from employee left join department
+
+7. Display employee details by implementing a right outer join
+=> select * from employee right outer join department on department.DEPT_NO = employee.DEPT_NO
