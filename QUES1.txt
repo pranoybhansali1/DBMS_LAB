@@ -1,0 +1,45 @@
+Question 1: Consider Employee table Perform the following
+
+Creating Employee TABLE =>
+create table employee(
+EMPNO char(5) not null primary key,
+EMP_NAME char(10),
+DEPT char(10),
+SALARY numeric(12,2),
+DOJ char(10),
+BRANCH char(10))
+
+INSERTING VALUES =>
+insert into employee values ('E101', 'Amit', 'Production', 45000, '12-Mar-00', 'Bangalore');
+insert into employee values ('E102', 'Amit', 'HR', 70000, '03-Jul-02', 'Bangalore');
+insert into employee values ('E103', 'sunita', 'Management', 120000, '11-Jan-01', 'mysore');
+insert into employee values ('E105', 'sunita', 'IT', 67000, '01-Aug-01', 'mysore');
+insert into employee values ('E106', 'mahesh', 'Civil', 145000, '20-Sep-03', 'Mumbai');
+
+
+1. Display all the fields of employee table.
+=> select EMPNO, EMP_NAME, SALARY from employee where SALARY>(select avg(salary) from employee)
+
+2. Retrieve employee number and their salary.
+=> select * from employee where SALARY=(select min(salary) from employee)
+
+3. Retrieve average salary of all employee.
+=> select avg(SALARY) as AverageSalary from employee
+
+4. Retrieve number of employee.
+=> select count(EMPNO) from employee
+
+5. Retrieve distinct number of employee.
+=> select distinct count(EMPNO) from employee
+
+6. Retrieve total salary of employee group by employee name and count similar names.
+=> select EMP_NAME, total(SALARY) from employee group by EMP_NAME
+
+7. Retrieve total salary of employee which is greater than >120000 .
+=> select EMP_NAME,SALARY from employee where SALARY>120000
+
+8. Display name of employee in descending order.
+=> select EMP_NAME from employee order by EMP_NAME desc
+
+9. Display details of employee whose name is AMIT and salary greater than 50000.
+=> select * from employee where EMP_NAME="Amit" and SALARY>50000
