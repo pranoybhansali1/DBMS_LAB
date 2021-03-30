@@ -35,7 +35,7 @@ insert into employee values ('E106', 'mahesh', 'Civil', 145000, '20-Sep-03', 'Mu
 6. Retrieve total salary of employee group by employee name and count similar names.
 => select EMP_NAME, total(SALARY) from employee group by EMP_NAME
 
-7. Retrieve total salary of employee which is greater than >120000 .
+7. Retrieve total salary of employee which is greater than >120000.
 => select EMP_NAME,SALARY from employee where SALARY>120000
 
 8. Display name of employee in descending order.
